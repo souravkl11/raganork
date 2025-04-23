@@ -12,7 +12,7 @@ var badwordsRegExp = require('badwords/regexp');
 const {
     getString
 } = require('./misc/lang');
-const {ChatGPT, Davinci} = require('./misc/AI');
+// const {ChatGPT} = require('./misc/AI');
 const {
     getJson,
     gtts
@@ -122,7 +122,7 @@ Module({
     desc: Lang.IMG_DESC,
     use: 'search'
 }, (async (message, match) => {
-    if (!match[1]) return await message.sendReply(Lang.NEED_WORD);
+    if (!match[1]) return await message.sendReply(Lang.NEED_WORDS);
     var count = parseInt(match[1].split(",")[1]) || 5
     var query = match[1].split(",")[0] || match[1];
     if (badwordsRegExp.test(query)) return await message.sendReply(`_The word "${query.match(badwordsRegExp)}" is blocked!_`)
@@ -152,27 +152,30 @@ Module({
 Module({
     pattern: 'gpt ?(.*)',
     fromMe: w,
-    desc: "OpenAI's yet another languauge model, best model for text generation and better prompt analysis",
+    desc: "ChatGPT, runs on GPT-4",
     use: 'AI',
     usage: '.gpt Write a short note about Lionel Messi'
 }, (async (message, match) => {
     if (!match[1]) return await message.sendReply("Need any query!");
-    const result = await Davinci(match[1])
-    const text = result.result?result.result:result;
-    return await message.sendReply(text)
-}));
-Module({
-    pattern: 'davinci ?(.*)',
-    fromMe: w,
-    dontAddCommandList:true,
-    desc: "OpenAI's yet another languauge model, best model for text generation and better prompt analysis",
-    use: 'AI',
-    usage: '.gpt Write a short note about Lionel Messi'
-}, (async (message, match) => {
-    if (!match[1]) return await message.sendReply("Need any query!");
-    const result = await Davinci(match[1])
-    const text = result.result?result.result:result;
-    return await message.sendReply(text)
+    let response;
+const maxRetries = 3;
+const timeout = 15000;
+
+for (let x = 1; x <= maxRetries; x++) {
+    try {
+        const result = await axios.get('https://chat.raganork.online/api/chat', {
+            params: { content: match[1] },
+            timeout: timeout,
+        });
+        response = result.data.response;
+        break;
+    } catch (error) {
+        if (x === maxRetries) {
+            response = "_Request failed!_"
+        }
+    }
+}
+    return await message.sendReply(response)
 }));
 Module({
     pattern: 'zipcode ?(.*)',
@@ -297,6 +300,7 @@ Module({
     if (!s1.includes('youtu')) return await message.sendReply("*"+Lang.NEED_VIDEO+"*");
     const getID = /(?:http(?:s|):\/\/|)(?:(?:www\.|)youtube(?:\-nocookie|)\.com\/(?:watch\?.*(?:|\&)v=|embed|shorts\/|v\/)|youtu\.be\/)([-_0-9A-Za-z]{11})/
     var vid = getID.exec(s1)[1]
+    await message.sendReply('_Downloading_');
     const video = await ytv(vid)
     const caption = await ytTitle(vid)    
     return await message.client.sendMessage(message.jid, {
@@ -389,7 +393,7 @@ Module({
 }, async (message, match) => {
     if (!match[1]) return await message.sendReply("_Need a movie/series name_");
     var news = [];
-    var res = (await axios(`https://raganork.tk/api/subtitles?query=${match[1]}`)).data
+    var res = (await axios(`https://api.raganork.online/api/subtitles?query=${match[1]}`)).data
 	if (!res) return await message.sendReply('_No results!_');
     if (res?.length && !('dl_url' in res)){
     var list = `_*Subtitles matching "${match[1]}":*_\n\n`

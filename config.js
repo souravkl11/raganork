@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 const isVPS = !(__dirname.startsWith("/rgnk") || __dirname.startsWith("/skl"));
 const isHeroku = __dirname.startsWith("/skl");
 const isKoyeb = __dirname.startsWith("/rgnk");
-const isRailway = __dirname.startsWith("/railway");
+const isRailway = __dirname.startsWith("/rgnk");
 if (fs.existsSync('config.env')) require('dotenv').config({ path: './config.env' });
 function convertToBool(text, fault = 'true',fault2='on') {
     return ((text === fault) || (text === fault2));
@@ -36,6 +36,7 @@ module.exports = {
     ANTIWORD_WARN: process.env.ANTIWORD_WARN || '',
     ANTI_SPAM: process.env.ANTI_SPAM || '919074309534-1632403322@g.us',
     MULTI_HANDLERS: convertToBool(process.env.MULTI_HANDLERS) || false,
+    DISABLE_START_MESSAGE: convertToBool(process.env.DISABLE_START_MESSAGE) || false,
     NOLOG: process.env.NOLOG || false,
     DISABLED_COMMANDS: (process.env.DISABLED_COMMANDS ? process.env.DISABLED_COMMANDS.split(",") : undefined) || [],
     ANTI_BOT: process.env.ANTI_BOT || '',

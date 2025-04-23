@@ -51,5 +51,5 @@ Module({
     if (!m.reply_message || (!m.quoted?.message.hasOwnProperty('viewOnceMessage') &&  !m.quoted?.message.hasOwnProperty('viewOnceMessageV2'))) return await m.sendReply("_Not a view once msg!_") 
     m.quoted.message = m.quoted.message.viewOnceMessage?.message || m.quoted.message.viewOnceMessageV2?.message;
     m.quoted.message[Object.keys(m.quoted.message)[0]].viewOnce = false
-    await m.forwardMessage(m.jid,m.quoted,{caption: "_Anti view once_"})
+    await m.forwardMessage(m.jid,m.quoted)
     }));

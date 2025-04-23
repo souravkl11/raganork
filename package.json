@@ -26,7 +26,7 @@
   "dependencies": {
     "@adiwajshing/baileys": "git+https://github.com/souravkl11/Baileys.git",
     "@adiwajshing/keyed-db": "0.2.4",
-    "@whiskeysockets/baileys": "git+https://github.com/WhiskeySockets/Baileys.git#master",
+    "@whiskeysockets/baileys": "github:sou6av/baileys-js",
     "acrcloud": "1.4.0",
     "adm-zip": "0.5.9",
     "awesome-phonenumber": "5.3.0",

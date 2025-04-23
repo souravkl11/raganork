@@ -1,14 +1,16 @@
 # _Raganork-multi-device_
-## _Multi device whatsapp bot created with [@adiwajshing/baileys](https://github.com/adiwajshing/Baileys)_
+## _Multi device whatsapp bot created with [Baileys](https://github.com/whiskeysockets/Baileys)_
   
 <div align="center">
    
-<a href="https://raganork-network.vercel.app/"><img align="center" src="https://i.imgur.com/dzPTA6u.png" alt="Scan QR" height="112" width="300" /></a><br>
+<a href="https://raganork.online/"><img align="center" src="https://i.imgur.com/dzPTA6u.png" alt="Scan QR" height="112" width="300" /></a><br>
 
-<a href="https://www.buymeacoffee.com/skl11"><img src="https://img.buymeacoffee.com/button-api/?text=Support this project&emoji=&slug=skl11&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff" /></a><br>
+</div>
 
-<div>
+## _Note: Use a VPN according to the server you choose if the session logs out automatically._
 <br>
+
+<div align="center">
 
 ## Deploy to Heroku ↓
 

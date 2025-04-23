@@ -4,6 +4,7 @@ you may not use this file except in compliance with the License.
 Raganork MD - Sourav KL11
 */
 function containsDisallowedWords(str,disallowedWords) {
+    str = str.toLowerCase()
     for (let word of disallowedWords){
       if (str.match(word)){
         let otherWords = str.replace(word,'±').split('±')
@@ -348,10 +349,54 @@ fs.writeFileSync('./config.env', lines.join('\n'));
         desc: "Bot settings to enable extra options related to WhatsApp bot functionality.",
         use: 'owner'
     }, (async (message, match) => {
-            let configs = settingsMenu
-        let msgToBeSent = "_*Settings configuration menu*_\n\n"+configs.map(e=>configs.indexOf(e)+1+'. _*'+e.title+'*_').join('\n')+'\n\n_Reply the number to continue_'
-        return await message.sendReply(msgToBeSent)
-        }));
+        let configs = settingsMenu
+        if (match[1]){
+            if (configs.map(e=>e.title).includes(match[1])){
+                let buttons = {
+                    type: 'quick_reply',
+                    head: {
+                      title: match[1],
+                      subtitle:"",
+                      footer: `Select an action, on or off?`
+                    },
+                    body: [{
+                        name: "quick_reply",
+                        buttonParamsJson: `{"display_text":"ON","id":"${handler}setvar ${configs.filter(e=>e.title == match[1])[0].env_var}:true"}`
+                      }, {
+                        name: "quick_reply",
+                        buttonParamsJson: `{"display_text":"OFF","id":"${handler}setvar ${configs.filter(e=>e.title == match[1])[0].env_var}:false"}`
+                      }]
+                  }
+                  return await message.sendInteractiveMessage(message.jid, buttons,{quoted: message.data})                  
+            }
+        }
+        let list = {
+            type: 'single_select',
+            head: {
+              title: "*Settings configuration menu*",
+              subtitle:"",
+              footer: ''
+            },
+            body : {
+            title:"Select an option",
+            sections:[
+            {
+            title:"Select an option",
+            highlight_label:"",
+            rows:[]
+            }
+            ]
+            }
+          }
+          configs.map((e)=>{
+            list.body.sections[0].rows.push({
+                title: e.title,
+                description:'',
+                id: handler+"settings " + e.title
+            })
+        })
+          return await message.sendInteractiveMessage(message.jid, list,{quoted: message.data})
+          }));
     Module({
         pattern: 'mode ?(.*)',
         fromMe: true,

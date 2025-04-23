@@ -204,11 +204,12 @@ Module({
     var link = query[1] !== '' ? query[1] : msg.reply_message.text;
     if (!link) return await msg.sendReply("_Need a tiktok url_");
     link = link.match(/\bhttps?:\/\/\S+/gi)[0]
+    let result;
     try {
-        let {result} = await tiktok(link)
+        result = (await tiktok(link)).result
         await msg.sendReply({url:result},'video')        
     } catch (error) {
-        await msg.sendReply("_Server busy!_")
+        await msg.sendReply("```"+`Download failed\n\nResponse: ${result}`+"```")
     }
       }));
     Module({

@@ -6,11 +6,9 @@ Raganork MD - Sourav KL11
 const {
   Module
 } = require('../main');
-const fs = require("fs");
 const {
   MODE,
   HANDLERS,
-  AUDIO_DATA,
   BOT_INFO,
   settingsMenu
 } = require('../config');
@@ -21,19 +19,15 @@ const {
   getString
 } = require('./misc/lang');
 const {
-  getJson,
-  searchYT,
-  searchSong
+  getJson
 } = require('./misc/misc');
 const {
-    ytTitle,downloadYT, dlSong, ytv, getResolutions
+    ytTitle,downloadYT, dlSong, ytv, getResolutions, getSearchImage, searchYT
   } = require('./misc/yt');
 const Lang = getString('scrapers');
 const {setVar} = require('./manage');
 const {
   skbuffer,
-  ytdlServer,
-  getVideo,
   addInfo
 } = require('raganork-bot');
 let configs = settingsMenu
@@ -48,6 +42,7 @@ Module({
   use: 'download'
 }, (async (message, match) => {
 if (!match[1]) return message.sendReply("_Need song name, eg: .play starboy_")
+if (match[1].includes('open.spotify.com')) return message.sendReply("_Please use the .spotify command!_")
 let sr = (await searchYT(match[1])).videos[0];
   const title = await ytTitle(sr.id)
   await message.sendReply(`*Downloading:* _${title}_`)
@@ -64,9 +59,33 @@ let sr = (await searchYT(match[1])).videos[0];
   });
 });
 }));
-/*
-
-IN CASE IF BUTTONS TO COME BACK!
+Module({
+  pattern: 'spotify ?(.*)',
+  fromMe: fm,
+  desc: "Spotify audio downloader",
+  usage:'.spotify link here',
+  use: 'download'
+}, (async (message, match) => {
+  match[1] = match[1].match(/\bhttps?:\/\/\S+/gi)?.[0]
+if (!match[1]) return message.sendReply("_Need a spotify URL_")
+  let spotifyTitle = await require("axios")(`https://api.raganork.online/api/spotify?url=${match[1]}`)
+  if (!spotifyTitle.data.result) return message.sendReply("_Download failed, please search the same using the .song command_")
+  let sr = (await searchYT(spotifyTitle.data.result)).videos[0];
+  const title = await ytTitle(sr.id)
+  await message.sendReply(`*Downloading:* _${title}_`)
+  let sdl = await dlSong(sr.id);
+  ffmpeg(sdl)
+  .save('./temp/song.mp3')
+  .on('end', async () => { 
+  var song = await addInfo('./temp/song.mp3',title,BOT_INFO.split(";")[0],"Raganork audio downloader",await skbuffer(`https://i3.ytimg.com/vi/${sr.id}/hqdefault.jpg`))
+  return await message.client.sendMessage(message.jid, {
+      audio:song,
+      mimetype: 'audio/mp4'
+  }, {
+      quoted: message.data
+  });
+});
+}));
 
 Module({
   pattern: 'ytv ?(.*)',
@@ -78,33 +97,44 @@ Module({
   if (match[1].startsWith('dl;')){
     const link = match[1].split(';')[2]
     const res_ = match[1].split(';')[1]
-    const result__ = await ytv(link,res_)
+    let progress = await message.sendReply(`_Downloading ${res_}: 0%_`)
+    message.progressKey = progress.key
+    const result__ = await ytv(link,res_,message)
     const title = await ytTitle(link)
-    return await message.client.sendMessage(message.jid,{video:result__,caption:`_${title} *[${res_}]*_`},{quoted:message.data}) 
+    await message.edit(`_Uploading to WhatsApp servers.._`,message.jid,message.progressKey)
+    await message.client.sendMessage(message.jid,{document:result__,mimetype:"video/mp4",fileName:`${title} [${res_}].mp4`},{quoted: message.data});
+    return await message.edit(`_Download complete!_`,message.jid,message.progressKey)
   }
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
   link = link[0].match(getID)[1]
-  var rows = []
   const result_ = await getResolutions(link)
+  let list = {
+    type: 'single_select',
+    head: {
+      title: "*Select a resolution*",
+      subtitle:"",
+      footer: `Avaiable resolutions: ${result_.length}`
+    },
+    body : {
+    title:"Select resolution",
+    sections:[
+    {
+    title:"Select a resolution",
+    highlight_label:"Highest",
+    rows:[]
+    }
+    ]
+    }
+  }
   for (var i of result_){
-    rows.push({
+    list.body.sections[0].rows.push({
       title:i.fps60?i.quality+' 60fps':i.quality,
       description:i.size,
-      rowId: handler+"ytv dl;"+(i.fps60?i.quality+'60':i.quality)+';'+link
+      id: handler+"ytv dl;"+(i.fps60?i.quality+'60':i.quality)+';'+link
   })
   }
-  const sections = [{
-      title:'Select a resolution',
-      rows:rows
-  }];
-  const listMessage = {
-      text: " ",
-      title: "Select a quality",
-      buttonText: "View all",
-      sections
-  }
- return await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
+ return await message.sendInteractiveMessage(message.jid, list,{quoted: message.data})
 }
 }));
 Module({
@@ -114,6 +144,7 @@ Module({
   use: 'download'
 }, (async (message, match) => {
   if (!match[1]) return message.sendReply(Lang.NEED_TEXT_SONG)
+  if (match[1].includes('open.spotify.com')) return message.sendReply("_Please use the .spotify command!_")
   var link = match[1].match(/\bhttps?:\/\/\S+/gi)
   if (link !== null && getID.test(link[0])) {
   let v_id = link[0].match(getID)[1]
@@ -132,32 +163,39 @@ Module({
   });
  }); 
 } else {
-  var myid = message.client.user.id.split("@")[0].split(":")[0]
   var sr = await searchYT(match[1]);
   sr = sr.videos.splice(0,21);
   if (sr.length < 1) return await message.sendReply(Lang.NO_RESULT);
-  var SongData = []
+  let searchImage = await getSearchImage(sr[0].id);
+  let list = {
+    type:'single_select',
+    head: {
+      title: "*Matching songs for "+match[1]+'*',
+      subtitle:"",
+      footer: "Showing "+sr.length+" results"
+    },
+    body : {
+    title:"Select song",
+    sections:[
+    {
+    title:"Select a song",
+    highlight_label:"Matching",
+    rows:[]
+    }
+    ]
+    }
+  }
   for (var i in sr){
     const title = sr[i].title?.text
     if (title){
-    SongData.push({
+    list.body.sections[0].rows.push({
       title,
-      description: sr[i].artist,
-      rowId: handler+"song https://youtu.be/" + sr[i].id
+      description: sr[i].duration?.text,
+      id: handler+"song https://youtu.be/" + sr[i].id
   })
   }
   }
-  const sections = [{
-      title: Lang.MATCHING_SONGS,
-      rows: SongData
-  }];
-  const listMessage = {
-      text: "and "+(sr.length-1)+" more results..",
-      title: sr[0].title.text,
-      buttonText: "Select song",
-      sections
-  }
- return await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
+  return await message.sendInteractiveMessage(message.jid, list,{quoted: message.data,image:{url:searchImage}})
 }
 }));
 
@@ -174,45 +212,69 @@ Module({
   info,
   thumbnail
 } = await getJson("https://raganork-network.vercel.app/api/youtube/details?video_id=" +link[0].split("/")[3]);
-const buttons = [
-  {buttonId: handler+'video '+link[0], buttonText: {displayText: '𝗩𝗜𝗗𝗘𝗢'}, type: 1},
-  {buttonId: handler+'song '+link[0], buttonText: {displayText: '𝗔𝗨𝗗𝗜𝗢'}, type: 1}
-]
-const buttonMessage = {
-    image: {url: thumbnail},
-    caption: info,
-    footer: '',
-    buttons: buttons,
-    headerType: 4
+let buttons = {
+  type: 'quick_reply',
+  head: {
+    title: info,
+    subtitle:"",
+    footer: `Select media type`
+  },
+  body: [
+    {
+      name: "quick_reply",
+      buttonParamsJson: `{"display_text":"𝗩𝗜𝗗𝗘𝗢","id":"${handler}video ${link[0]}"}`
+    },
+    {
+      name: "quick_reply",
+      buttonParamsJson: `{"display_text":"𝗔𝗨𝗗𝗜𝗢","id":"${handler}song ${link[0]}"}`
+    },
+    {
+      name: "cta_url",
+      buttonParamsJson: `{"display_text":"𝗪𝗔𝗧𝗖𝗛","url":"${link[0]}","merchant_url":"${link[0]}"}`
+    }
+  ]
 }
-return await message.client.sendMessage(message.jid, buttonMessage)
-  }
+return await message.sendInteractiveMessage(message.jid, buttons,{quoted: message.data,image:{url:thumbnail}})
+}
   let sr = await searchYT(match[1]);
   sr = sr.videos;
   if (sr.length < 1) return await message.sendReply("*No results found!*");
-  var videos = [];
-  for (var index in sr) {
-    const title = sr[index].title?.text  
-    if (title){
-    videos.push({
-          title,
-          description: sr[index].duration?.text,
-          rowId: handler+"yts https://youtu.be/" + sr[index].id
-      });
-      }  }
-  const sections = [{
-      title: "YouTube search resulrs",
-      rows: videos
-  }]
-  const listMessage = {
-      text: "and " + (sr.length - 1) + " more results...",
-      title: sr[0].title.text,
-      buttonText: "Select a video",
-      sections
+  let searchImage = await getSearchImage(sr[0].id);
+  let list = {
+    type: 'single_select',
+    head: {
+      title: "*Matching results for "+match[1]+'*',
+      subtitle:"",
+      footer: ''
+    },
+    body : {
+    title:"Select a video",
+    sections:[
+    {
+    title:"Select a song",
+    highlight_label:"Matching",
+    rows:[]
+    }
+    ]
+    }
   }
-  await message.client.sendMessage(message.jid, listMessage,{quoted: message.data})
+  for (var i in sr){
+    const title = sr[i].title?.text
+    if (title && sr[i].duration?.text){
+    list.body.sections[0].rows.push({
+      title,
+      description: sr[i].duration?.text,
+      id: handler+"yts https://youtu.be/" + sr[i].id
+  })
+  }
+  }
+  list.head.footer = "Found "+list.body.sections[0].rows.length+" results"
+  return await message.sendInteractiveMessage(message.jid, list,{quoted: message.data,image:{url:searchImage}})
 }));
-*/
+/*
+
+IN CASE BUTTON VEENDUM OOMFIYAL:
+
 Module({
   pattern: 'ytv ?(.*)',
   fromMe: fm,
@@ -470,4 +532,4 @@ Module({
           console.log("")
         }  
       }
-  }));
+  }));*/
