@@ -1,6 +1,6 @@
 {
   "name": "raganork-md",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "A light weight WhatsApp bot.",
   "scripts": {
     "start": "pm2 start . --attach --name Raganork"
@@ -24,9 +24,8 @@
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/souravkl11/raganork#readme",
   "dependencies": {
-    "@adiwajshing/baileys": "git+https://github.com/souravkl11/Baileys.git",
+    "@adiwajshing/baileys": "^6.4.0",
     "@adiwajshing/keyed-db": "0.2.4",
-    "@whiskeysockets/baileys": "github:sou6av/baileys-js",
     "acrcloud": "1.4.0",
     "adm-zip": "0.5.9",
     "awesome-phonenumber": "5.3.0",
