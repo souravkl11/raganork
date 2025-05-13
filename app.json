@@ -1,6 +1,5 @@
-{
-	"name": "Deploy",
-	"description": "Wa Bot.",
+        "name": " Plg Bot.",
+	"description": " Plg Bot on Top!.",
 	"keywords": [
 		"whatsapp",
 		"bot"
@@ -36,12 +35,12 @@
         "HEROKU_APP_NAME": {
             "description": "Exact name which you gave at the top",
             "required": true,
-            "value":""
+            "value":" Kerane-Plg"
         },
         "STICKER_DATA": {
             "description": "Name of stickers created using bot. Can also split using ;",
             "required": true,
-            "value":"ʀᴀɢᷨᴀͦɴͭᴏʀᴋ"
+            "value":" Plg Bot🕷️"
         },
         "CHATBOT": {
             "description": "AI chatbot",
@@ -66,12 +65,12 @@
         "MODE": {
             "description": "Private or public",
             "required": true,
-            "value":"private"
+            "value":"public"
         },
         "SUDO": {
             "description": "These numbers can control your bot. seperate with commas",
             "required": false,
-            "value":"919074309534"
+            "value":"241077738628"
         },
         "ALIVE": {
             "description": "Alive message {image/link}, {sender} can also be used",
@@ -79,7 +78,8 @@
             "value":"{pp} Active since {uptime}\n User:{sender}"
         },
        "SESSION": {
-            "description": "Your MD session",
+            "description": "Raganork~c6de5f6880fdf0aee3d01fe91a59072a:686f66475232526d3656553d
+",
             "required": true
              
         }
