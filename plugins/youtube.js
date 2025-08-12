@@ -86,7 +86,7 @@ if (!match[1]) return message.sendReply("_Need a spotify URL_")
   });
 });
 }));
-
+/*
 Module({
   pattern: 'ytv ?(.*)',
   fromMe: fm,
@@ -271,9 +271,8 @@ return await message.sendInteractiveMessage(message.jid, buttons,{quoted: messag
   list.head.footer = "Found "+list.body.sections[0].rows.length+" results"
   return await message.sendInteractiveMessage(message.jid, list,{quoted: message.data,image:{url:searchImage}})
 }));
-/*
+*/
 
-IN CASE BUTTON VEENDUM OOMFIYAL:
 
 Module({
   pattern: 'ytv ?(.*)',
@@ -532,4 +531,4 @@ Module({
           console.log("")
         }  
       }
-  }));*/
+  }));
