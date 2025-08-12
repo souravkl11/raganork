@@ -30,12 +30,12 @@
         },
        "HEROKU_API_KEY": {
             "description": "For updating bot and setting vars remotely",
-            "required": true,
+            "required": false,
             "value":""
         },
         "HEROKU_APP_NAME": {
             "description": "Exact name which you gave at the top",
-            "required": true,
+            "required": false,
             "value":""
         },
         "STICKER_DATA": {
@@ -79,7 +79,7 @@
             "value":"{pp} Active since {uptime}\n User:{sender}"
         },
        "SESSION": {
-            "description": "Your MD session",
+            "description": "Raganork~23f358c8198adb39da8572b832b4b396:37417763763652615a34303d",
             "required": true
              
         }
