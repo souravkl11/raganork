@@ -46,12 +46,12 @@
         "CHATBOT": {
             "description": "AI chatbot",
             "required": true,
-            "value":"off"
+            "value":"true
         },
         "BOT_NAME": {
             "description": "Name of AI chatbot",
             "required": true,
-            "value":"Raganork"
+            "value":"true
         },
         "BOT_INFO": {
             "description": "Name, image, owner and other details in menu (seperate with comma)",
@@ -71,14 +71,14 @@
         "SUDO": {
             "description": "These numbers can control your bot. seperate with commas",
             "required": false,
-            "value":"919074309534"
+            "value":"923013056823"
         },
         "ALIVE": {
             "description": "Alive message {image/link}, {sender} can also be used",
             "required": false,
             "value":"{pp} Active since {uptime}\n User:{sender}"
         },
-       "SESSION": {
+       "SESSION": {Raganork~4eff858ad02d01237878c0d2d36e8900:59626e34627749777651773d
             "description": "Your MD session",
             "required": true
              
