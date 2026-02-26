@@ -41,7 +41,7 @@
         "STICKER_DATA": {
             "description": "Name of stickers created using bot. Can also split using ;",
             "required": true,
-            "value":"ʀᴀɢᷨᴀͦɴͭᴏʀᴋ"
+            "value":"sᴀᴛʜᴀɴɪᴄ"
         },
         "CHATBOT": {
             "description": "AI chatbot",
@@ -51,17 +51,17 @@
         "BOT_NAME": {
             "description": "Name of AI chatbot",
             "required": true,
-            "value":"Raganork"
+            "value":"Sᴀᴛʜᴀɴɪᴄ"
         },
         "BOT_INFO": {
             "description": "Name, image, owner and other details in menu (seperate with comma)",
             "required": true,
-            "value":"Raganork,SKL11,91123456789,https://i.imgur.com/B2YWSLk.jpg"
+            "value":"sᴀᴛʜᴀɴɪᴄ,917994128839,https://ik.imagekit.io/eypz/1728229309430__zXy52Sxa.png"
         },
         "AUDIO_DATA": {
             "description": "Name of audio (take) name;name;image(url)",
             "required": true,
-            "value":"ʀᴀɢᷨᴀͦɴͭᴏʀᴋ;ʀᴀɢᷨᴀͦɴͭᴏʀᴋ;https://2.img-dpreview.com/files/p/E~C1000x0S4000x4000T1200x1200~articles/3925134721/0266554465.jpeg"
+            "value":"sᴀᴛʜᴀɴɪᴄ;sᴀᴛʜᴀɴɪᴄ;https://ik.imagekit.io/eypz/1728229309430__zXy52Sxa.png"
         },
         "MODE": {
             "description": "Private or public",
@@ -71,7 +71,7 @@
         "SUDO": {
             "description": "These numbers can control your bot. seperate with commas",
             "required": false,
-            "value":"919074309534"
+            "value":"917994128839"
         },
         "ALIVE": {
             "description": "Alive message {image/link}, {sender} can also be used",
