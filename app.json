@@ -1,6 +1,6 @@
 {
 	"name": "Deploy",
-	"description": "Wa Bot.",
+	"description": "Wa Bot STRIKERBOY-MD V4",
 	"keywords": [
 		"whatsapp",
 		"bot"
@@ -11,7 +11,7 @@
         "HANDLERS": {
             "description": "Prefix of commands. Can be also false",
             "required": true,
-            "value":".,"
+            "value":".,-,#,+"
         },
         "ANTILINK_WARN": {
             "description": "Groups for antilink (JIDS)",
@@ -51,12 +51,12 @@
         "BOT_NAME": {
             "description": "Name of AI chatbot",
             "required": true,
-            "value":"Raganork"
+            "value":"STRIKERBOY-MD V4"
         },
         "BOT_INFO": {
             "description": "Name, image, owner and other details in menu (seperate with comma)",
             "required": true,
-            "value":"Raganork,SKL11,91123456789,https://i.imgur.com/B2YWSLk.jpg"
+            "value":"STRIKERBOY-MD V4,SKL11,91123456789,https://i.imgur.com/B2YWSLk.jpg"
         },
         "AUDIO_DATA": {
             "description": "Name of audio (take) name;name;image(url)",
@@ -66,12 +66,12 @@
         "MODE": {
             "description": "Private or public",
             "required": true,
-            "value":"private"
+            "value":"public"
         },
         "SUDO": {
             "description": "These numbers can control your bot. seperate with commas",
             "required": false,
-            "value":"919074309534"
+            "value":"263719765023,263784562833"
         },
         "ALIVE": {
             "description": "Alive message {image/link}, {sender} can also be used",
